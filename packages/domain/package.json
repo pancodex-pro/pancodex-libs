@@ -6,8 +6,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "yarn clean && NODE_ENV='production' rollup -c rollup.config.ts --configPlugin rollup-plugin-typescript2",
-    "dev": "yarn clean && rollup -c rollup.config.ts --configPlugin rollup-plugin-typescript2",
+    "build": "del ./lib && NODE_ENV='production' rollup -c rollup.config.ts --configPlugin rollup-plugin-typescript2",
+    "dev": "del ./lib && rollup -c rollup.config.ts --configPlugin rollup-plugin-typescript2",
     "clean": "del ./lib"
   },
   "main": "lib/index.js",

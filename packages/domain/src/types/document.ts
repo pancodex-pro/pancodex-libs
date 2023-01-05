@@ -36,7 +36,6 @@ export type Document_Base = {
 
 export type Document_Bean = Document_Base & {
     isDeleted?: boolean;
-    isSlugLocalized?: boolean;
     contents: Record<LocaleType, DocumentContent_Bean>;
 }
 

@@ -4,7 +4,7 @@ import {
     DocumentContent_Base,
     DocumentRecord_TreeItem,
     DocumentType,
-    SiteMap_Index
+    SiteMap_Index, SiteMap_Bean
 } from '../types';
 import {traverseDocumentContents, traverseDocumentContentsByLocale} from './documentUtils';
 
@@ -45,6 +45,13 @@ export function findDocument(root: DocumentRecord_Bean, documentId: string): Doc
 //     }
 //     return foundLevel;
 // }
+
+export function makeSiteIndexCached(siteMap: SiteMap_Bean, locale?: string, cacheKey?: string): SiteMap_Index {
+    if (!cacheKey) {
+        return makeSiteIndex(siteMap.root, {}, siteMap.defaultLocale, locale);
+    }
+    throw Error('Caching in the site index processing is not implemented yet.');
+}
 
 export function makeSiteIndex(root: DocumentRecord_Bean, accumulator: SiteMap_Index = {}, defaultLocale: string, locale?: string, rootNodePath?: Array<DocumentRecord_Bean>): SiteMap_Index {
     let accumulatorLocal: SiteMap_Index = {...accumulator};

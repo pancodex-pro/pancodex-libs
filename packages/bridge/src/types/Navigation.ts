@@ -8,8 +8,8 @@ export type NavigationItem = {
     id: string;
     title: string;
     url: string;
-    imageSrc?: string;
-    imageAlt?: string;
-    iconSrc?: string;
-    children?: Array<NavigationItem>;
+    imageSrc: string | null;
+    imageAlt: string | null;
+    iconSrc: string | null;
+    children: Array<NavigationItem> | null;
 };

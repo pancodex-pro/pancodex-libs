@@ -1,16 +1,19 @@
-import {makeSiteIndex, SiteMap_Bean, DocumentContent_Bean, DocumentProfile_Item} from '@pancodex/domain';
-import {PageData, HeroContentSection, NavigationItem, BodyContentSection_Header} from '../types';
 import {
+    makeSiteIndex,
+    SiteMap_Bean,
+    DocumentContent_Bean,
+    DocumentProfile_Item,
     Hero_Section,
     Body_Section,
     SiteMap_Index,
-    SiteMap_IndexBean,
+    SiteMap_IndexBean
 } from '@pancodex/domain';
+import {PageData, HeroContentSection, NavigationItem, BodyContentSection_Header} from '../types';
 import {pageContentSectionMethod_Hero} from './pageDataFactoryMethod_Hero';
 import {pageContentSectionMethod_Body} from './pageDataFactoryMethod_Body';
 import {createSiteContentNavigation} from './pageDataUtils';
 
-export type Context_Proxy = {
+export type DocumentContext_Proxy = {
     locale: string;
     siteMap: SiteMap_Bean;
     documentId: string;
@@ -18,7 +21,7 @@ export type Context_Proxy = {
     documentProfile: DocumentProfile_Item;
 };
 
-export function createPageData(contextProxy: Context_Proxy): PageData {
+export function createPageData(contextProxy: DocumentContext_Proxy): PageData {
     const newPageData: PageData = {
         title: 'Unknown',
         description: 'Undefined',
@@ -27,13 +30,15 @@ export function createPageData(contextProxy: Context_Proxy): PageData {
             description: 'Unknown',
             locale: '',
             url: '',
-            image: ''
+            image: null,
+            imageAlt: null,
+            localeAlternate: null
         },
         twitterCard: {
             card: '',
             title: '',
-            description: '',
-            image: ''
+            description: null,
+            image: null
         },
         content: {
             body: [],
@@ -49,21 +54,21 @@ export function createPageData(contextProxy: Context_Proxy): PageData {
     if (contextProxy) {
         const {siteMap, documentId, documentContent, documentProfile, locale} = contextProxy;
         newPageData.title = documentContent.title;
-        newPageData.description = documentContent.description;
+        newPageData.description = documentContent.description || null;
         if (documentProfile) {
             newPageData.openGraphData.title = documentContent.title;
-            newPageData.openGraphData.description = documentContent.description;
-            newPageData.openGraphData.image = documentContent.thumbnailImageSrc || documentContent.coverImageSrc;
+            newPageData.openGraphData.description = documentContent.description || null;
+            newPageData.openGraphData.image = documentContent.thumbnailImageSrc || documentContent.coverImageSrc || null;
             newPageData.openGraphData.locale = locale;
 
             if (documentProfile.twitter.cardType === 'SUMMARY_CARD_WITH_LARGE_IMAGE') {
                 newPageData.twitterCard.card = 'summary_large_image';
-                newPageData.twitterCard.image = documentContent.coverImageSrc;
+                newPageData.twitterCard.image = documentContent.coverImageSrc || null;
             } else {
                 newPageData.twitterCard.card = 'summary';
-                newPageData.twitterCard.image = documentContent.thumbnailImageSrc;
+                newPageData.twitterCard.image = documentContent.thumbnailImageSrc || null;
             }
-            newPageData.twitterCard.description = documentContent.description;
+            newPageData.twitterCard.description = documentContent.description || null;
             newPageData.twitterCard.title = documentContent.title;
         }
         if (documentContent.contentData) {
@@ -91,9 +96,10 @@ export function createPageData(contextProxy: Context_Proxy): PageData {
                             id: navigationItem.id,
                             url: navigationItem.url,
                             title: navigationItem.title,
-                            iconSrc: navigationItem.iconSrc,
-                            imageAlt: navigationItem.imageAlt,
-                            imageSrc: navigationItem.imageSrc
+                            iconSrc: navigationItem.iconSrc || null,
+                            imageAlt: navigationItem.imageAlt || null,
+                            imageSrc: navigationItem.imageSrc || null,
+                            children: null
                         });
                     });
                 }
