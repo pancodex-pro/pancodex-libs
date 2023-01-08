@@ -3,8 +3,6 @@ import {
     SiteMap_Bean,
     DocumentContent_Bean,
     DocumentProfile_Item,
-    Hero_Section,
-    Body_Section,
     SiteMap_Index,
     SiteMap_IndexBean
 } from '@pancodex/domain';
@@ -12,6 +10,7 @@ import {PageData, HeroContentSection, NavigationItem, BodyContentSection_Header}
 import {pageContentSectionMethod_Hero} from './pageDataFactoryMethod_Hero';
 import {pageContentSectionMethod_Body} from './pageDataFactoryMethod_Body';
 import {createSiteContentNavigation} from './pageDataUtils';
+import {imageResolverInstance} from './imageResolver';
 
 export type DocumentContext_Proxy = {
     locale: string;
@@ -21,7 +20,7 @@ export type DocumentContext_Proxy = {
     documentProfile: DocumentProfile_Item;
 };
 
-export function createPageData(contextProxy: DocumentContext_Proxy): PageData {
+export async function createPageData(contextProxy: DocumentContext_Proxy): Promise<PageData> {
     const newPageData: PageData = {
         title: 'Unknown',
         description: 'Undefined',
@@ -74,34 +73,34 @@ export function createPageData(contextProxy: DocumentContext_Proxy): PageData {
         if (documentContent.contentData) {
             const {body, hero} = documentContent.contentData;
             if (hero && hero.length > 0) {
-                hero.forEach((heroSection: Hero_Section) => {
-                    newPageData.content.hero.push(pageContentSectionMethod_Hero[heroSection.sectionType](heroSection));
-                });
+                for(const heroSection of hero) {
+                    newPageData.content.hero.push(await pageContentSectionMethod_Hero[heroSection.sectionType](heroSection));
+                }
             }
             if (body && body.length > 0) {
-                body.forEach((bodySection: Body_Section) => {
-                    newPageData.content.body.push(pageContentSectionMethod_Body[bodySection.sectionType](bodySection));
-                });
+                for(const bodySection of body) {
+                    newPageData.content.body.push(await pageContentSectionMethod_Body[bodySection.sectionType](bodySection));
+                }
             }
         }
         if (siteMap) {
             const siteMapIndex: SiteMap_Index = makeSiteIndex(siteMap.root, {}, siteMap.defaultLocale, contextProxy.locale);
-            const siteNavigation: Array<NavigationItem> = createSiteContentNavigation(siteMap, siteMapIndex);
+            const siteNavigation: Array<NavigationItem> = await createSiteContentNavigation(siteMap, siteMapIndex);
             console.log('SiteNavigation: ', siteNavigation);
             // init top level pages navigation
             if (documentProfile.navigation.useTopLevelNavigation) {
                 if (siteNavigation.length > 0) {
-                    siteNavigation.forEach((navigationItem: NavigationItem) => {
+                    for(const navigationItem of siteNavigation){
                         newPageData.navigation.topLevelNavigation.push({
                             id: navigationItem.id,
                             url: navigationItem.url,
                             title: navigationItem.title,
                             iconSrc: navigationItem.iconSrc || null,
                             imageAlt: navigationItem.imageAlt || null,
-                            imageSrc: navigationItem.imageSrc || null,
+                            imageSrc: await imageResolverInstance(navigationItem.imageSrc),
                             children: null
                         });
-                    });
+                    }
                 }
             }
             if (documentProfile.navigation.useSiteNavigation) {
