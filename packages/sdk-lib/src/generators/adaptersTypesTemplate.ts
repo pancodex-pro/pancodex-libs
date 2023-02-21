@@ -1,5 +1,4 @@
 export const adaptersTypesTemplate: string = `
-<% classNames.forEach(function(className) {%>
-export type {<%= upperFirst(className) %>Content} from './<%= upperFirst(className) %>Content';
+<% classNames.forEach(function(className) {%>export * from './<%= upperFirst(className) %>Content';
 <% }); %>
 `;

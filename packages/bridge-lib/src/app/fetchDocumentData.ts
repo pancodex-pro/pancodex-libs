@@ -6,8 +6,7 @@ import {
     DocumentProfile_Item,
     SiteMap_Bean
 } from '@pancodex/domain-lib';
-import {fetchDataFromFile} from './fetchDataFromFile';
-import {DocumentDataFetchingStatus} from './types';
+import {DocumentDataFetchingStatus, ReadDataFromFileFunc} from './types';
 
 function findDocument(root: DocumentRecord_Bean, documentSlug: string, locale: string): DocumentRecord_Bean | undefined {
     const foundContent = root.contents[locale];
@@ -28,11 +27,11 @@ function findDocument(root: DocumentRecord_Bean, documentSlug: string, locale: s
     }
 }
 
-export async function fetchDocumentData(locale?: string, documentSlug?: string): Promise<DocumentDataFetchingStatus> {
+export async function fetchDocumentData(readDataFunc: ReadDataFromFileFunc, locale?: string, documentSlug?: string): Promise<DocumentDataFetchingStatus> {
     let result: DocumentDataFetchingStatus = {};
     let siteMap: SiteMap_Bean;
     try {
-        siteMap = await fetchDataFromFile<SiteMap_Bean>('data/siteMap.json');
+        siteMap = await readDataFunc<SiteMap_Bean>('data/siteMap.json');
         if (!siteMap) {
             throw Error('Site map is not found.');
         }
@@ -49,7 +48,7 @@ export async function fetchDocumentData(locale?: string, documentSlug?: string):
         if (!foundDocument) {
             result.isNotFound = true;
         } else {
-            let document: Document_Bean = await fetchDataFromFile<Document_Bean>(`data/documents/${foundDocument.id}.json`);
+            let document: Document_Bean = await readDataFunc<Document_Bean>(`data/documents/${foundDocument.id}.json`);
             if (!document) {
                 throw Error('Page file is not found.');
             }
@@ -57,7 +56,7 @@ export async function fetchDocumentData(locale?: string, documentSlug?: string):
             if (!documentContent) {
                 throw Error('Page content is not found.');
             }
-            const documentProfiles: DocumentProfiles = await fetchDataFromFile<DocumentProfiles>('data/profilesIndex.json');
+            const documentProfiles: DocumentProfiles = await readDataFunc<DocumentProfiles>('data/profilesIndex.json');
             if (!documentProfiles) {
                 throw Error('Profiles file is not found.');
             }

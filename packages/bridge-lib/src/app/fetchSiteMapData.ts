@@ -1,12 +1,11 @@
 import {SiteMap_Bean} from '@pancodex/domain-lib';
-import {fetchDataFromFile} from './fetchDataFromFile';
-import {SiteMapDataFetchStatus} from './types';
+import {SiteMapDataFetchStatus, ReadDataFromFileFunc} from './types';
 
-export async function fetchSiteMapData(locale?: string, documentSlug?: string): Promise<SiteMapDataFetchStatus> {
+export async function fetchSiteMapData(readDataFunc: ReadDataFromFileFunc, locale?: string, documentSlug?: string): Promise<SiteMapDataFetchStatus> {
     let result: SiteMapDataFetchStatus = {};
     let siteMap: SiteMap_Bean;
     try {
-        siteMap = await fetchDataFromFile<SiteMap_Bean>('data/siteMap.json');
+        siteMap = await readDataFunc<SiteMap_Bean>('data/siteMap.json');
         if (!siteMap) {
             throw Error('Site map is not found.');
         }

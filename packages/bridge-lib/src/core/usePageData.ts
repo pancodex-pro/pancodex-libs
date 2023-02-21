@@ -1,5 +1,5 @@
 import {useContext} from 'react';
-import {PageDataContext} from './index';
+import {PageDataContext} from './PageDataProvider';
 import {PageData} from './types';
 
 export const usePageData = (): PageData => {

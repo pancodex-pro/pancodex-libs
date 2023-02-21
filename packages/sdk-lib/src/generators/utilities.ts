@@ -13,7 +13,7 @@ export async function readObjectFromFile(sourceFilePath: string): Promise<any> {
 export async function generateJsonFile(object: any, outputFilePath: string): Promise<void> {
     try {
         await fs.ensureFile(outputFilePath);
-        await fs.writeJSON(outputFilePath, object, {spaces: INDENT_SIZE, replacer: null});
+        await fs.writeJSON(outputFilePath, object, {spaces: INDENT_SIZE});
     } catch (e: any) {
         throw Error(`Error in generating '${outputFilePath}' file. ${e.message}`);
     }

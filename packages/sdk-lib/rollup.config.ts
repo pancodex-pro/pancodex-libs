@@ -27,7 +27,8 @@ export default {
         'react-dom',
         '@pancodex/domain-lib',
         'fs-extra',
-        'path'
+        'path',
+        'fs'
     ],
     plugins: [
         resolve(),

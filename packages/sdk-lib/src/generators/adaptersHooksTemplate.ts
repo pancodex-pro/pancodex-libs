@@ -4,7 +4,6 @@ import {PageData} from '<%= libPaths.bridgeLib %>';
 import {<%= upperFirst(className) %>Content} from './<%= upperFirst(className) %>Content';
 import {<%= upperFirst(className) %>ContentAdapter} from './<%= upperFirst(className) %>ContentAdapter';
 <% }); %>
-
 export type PageContentContext = {
 <% classNames.forEach(function(className) {%>
     <%= lowerFirst(className) %>Content?: <%= upperFirst(className) %>Content;

@@ -19,3 +19,5 @@ export type SiteMapDataFetchStatus = {
     isError?: boolean;
     error?: string;
 };
+
+export type ReadDataFromFileFunc = <T>(filePath: string) => Promise<T>;

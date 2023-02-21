@@ -1,7 +1,7 @@
 import {AnyFieldType, AnyField} from './fields';
 import {DocumentType, LocaleType} from './document';
 
-export type StringSelectKey = string | undefined;
+export type StringSelectKey = string | undefined | void;
 export type TextConstantKey = string | undefined;
 
 export type DocumentContentBlockComponentFieldClass<S extends StringSelectKey = undefined, T extends TextConstantKey = undefined> = {
@@ -45,4 +45,4 @@ export type StringSelects_Index = Record<string, Array<{
     value: string;
     icon?: string;
 }>>;
-export type DocumentClass_Index = Record<string, DocumentClass<string, string>>;
+export type DocumentClass_Index = Record<string, DocumentClass>;
