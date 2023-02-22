@@ -15,7 +15,7 @@ export class FilesGenerator {
 
     constructor() {
         this._dataDirPath = path.join(process.cwd(), 'data');
-        this._themeAdaptersDirPath = path.join(process.cwd(), 'src', 'theme', 'adapters');
+        this._themeAdaptersDirPath = path.join(process.cwd(), 'src', 'adapters');
         this._documentClasses = {};
         this._stringSelects = {};
         this._textConstants = {};

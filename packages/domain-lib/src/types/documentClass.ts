@@ -45,4 +45,4 @@ export type StringSelects_Index = Record<string, Array<{
     value: string;
     icon?: string;
 }>>;
-export type DocumentClass_Index = Record<string, DocumentClass>;
+export type DocumentClass_Index = Record<string, DocumentClass<string, string>>;

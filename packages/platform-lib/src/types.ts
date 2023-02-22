@@ -1,4 +1,8 @@
-import { CSSProperties, ReactNode, SVGProps } from 'react';
+import {ReactNode, CSSProperties} from 'react';
+
+export interface HeadProps {
+    children?: ReactNode;
+}
 
 export interface LinkProps {
     href: string;
@@ -11,7 +15,5 @@ export interface ImgProps {
     url?: string;
     alt?: string;
     svg?: string;
-    style?: CSSProperties;
-    svgProps?: SVGProps<string | number>;
     className?: string;
 }

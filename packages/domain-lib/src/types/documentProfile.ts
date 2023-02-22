@@ -23,4 +23,4 @@ export type DocumentProfile_Item = {
     termsAndConditionsSrc?: string;
 };
 
-export type DocumentProfiles = Record<string, DocumentProfile_Item>;
+export type DocumentProfile_Index = Record<string, DocumentProfile_Item>;
