@@ -5,36 +5,56 @@ import typescript from 'rollup-plugin-typescript2';
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf8'));
 
-export default {
-    input: 'src/index.ts',
-    output: [
-        {
-            file: pkg.main,
-            format: 'cjs',
-        },
-        {
-            file: pkg.module,
-            format: 'es',
-        },
-    ],
-    external: [
-        'lodash/upperFirst',
-        'lodash/lowerFirst',
-        'lodash/template',
-        'prettier/standalone',
-        'prettier/parser-typescript',
-        'react',
-        'react-dom',
-        '@pancodex/domain-lib',
-        'fs-extra',
-        'path',
-        'fs'
-    ],
-    plugins: [
-        resolve(),
-        commonjs(),
-        typescript({
-            useTsconfigDeclarationDir: true,
-        }),
-    ],
-};
+export default [
+    {
+        input: 'src/index.ts',
+        output: [
+            {
+                file: pkg.main,
+                format: 'cjs',
+            },
+            {
+                file: pkg.module,
+                format: 'es',
+            },
+        ],
+        external: [
+            'lodash/isString',
+            'lodash/upperFirst',
+            'lodash/lowerFirst',
+            'lodash/template',
+            'prettier/standalone',
+            'prettier/parser-typescript',
+            'react',
+            'react-dom',
+            '@pancodex/domain-lib',
+            'fs-extra',
+            'path',
+            'fs',
+            'klaw-sync',
+            'octokit',
+            '@rollup/plugin-commonjs',
+            '@rollup/plugin-image',
+            '@rollup/plugin-json',
+            '@rollup/plugin-node-resolve',
+            '@svgr/rollup',
+            'rollup',
+            'rollup-plugin-external-globals',
+            'rollup-plugin-styles',
+            'rollup-plugin-terser',
+            'rollup-plugin-typescript2',
+            'socket.io',
+            'cors',
+            'express',
+            'date-fns',
+            'request'
+        ],
+        plugins: [
+            resolve(),
+            commonjs(),
+            typescript({
+                useTsconfigDeclarationDir: true,
+            }),
+        ],
+    }
+];

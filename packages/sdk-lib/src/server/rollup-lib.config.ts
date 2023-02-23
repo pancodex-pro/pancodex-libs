@@ -1,0 +1,53 @@
+import json from '@rollup/plugin-json';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import image from '@rollup/plugin-image';
+import typescript from 'rollup-plugin-typescript2';
+import styles from 'rollup-plugin-styles';
+import svgr from '@svgr/rollup';
+
+const config: any = {
+    input: 'src/index.ts',
+    output: [
+        {
+            file: 'lib/index.js',
+            format: 'es',
+            assetFileNames: '[name][extname]',
+            paths: {
+                '@pancodex/platform-lib': '@/platform',
+            }
+        },
+    ],
+    external: [
+        'lodash/cloneDeep',
+        'lodash/forOwn',
+        'lodash/get',
+        'lodash/isArray',
+        'lodash/isEmpty',
+        'lodash/isObject',
+        'lodash/uniqueId',
+        'lodash/unionWith',
+        'lodash/isEqual',
+        'react',
+        'react-dom',
+        '@headlessui/react',
+        '@pancodex/bridge-lib',
+        '@pancodex/domain-lib',
+        '@pancodex/platform-lib'
+    ],
+    plugins: [
+        json(),
+        resolve({preferBuiltins: true}),
+        styles({
+            mode: ['extract', 'index.css']
+        }),
+        svgr(),
+        image(),
+        commonjs(),
+        typescript({
+            useTsconfigDeclarationDir: true,
+        }),
+    ],
+};
+
+export default config;

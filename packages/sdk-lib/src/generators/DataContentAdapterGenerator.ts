@@ -6,7 +6,9 @@ import {
     DocumentClass,
     DocumentContentBlockClass,
     DocumentContentAreaName,
-    DocumentContentBlockComponentClass, AnyFieldType, DocumentContentBlockComponentFieldClass
+    DocumentContentBlockComponentClass,
+    AnyFieldType,
+    DocumentContentBlockComponentFieldClass
 } from '@pancodex/domain-lib';
 import {formatTS} from './prettierWrapper';
 import {dataContentTypeTemplate} from './dataContentTypeTemplate';
