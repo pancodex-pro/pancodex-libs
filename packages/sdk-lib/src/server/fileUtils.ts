@@ -18,3 +18,11 @@ export function readAllFilesInDir(dirPath: string): Array<FileDescription> {
     }
     return resultList;
 }
+
+export function readFile(filePath: string): FileDescription {
+    return {
+        filePath,
+        fileName: path.basename(filePath),
+        fileData: fs.readFileSync(filePath, {encoding: 'utf8'})
+    };
+}
