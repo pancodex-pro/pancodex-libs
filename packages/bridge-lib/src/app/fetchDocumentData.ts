@@ -2,7 +2,7 @@ import {
     DocumentRecord_Bean,
     Document_Bean,
     DocumentContent_Bean,
-    DocumentProfiles,
+    DocumentProfile_Index,
     DocumentProfile_Item,
     SiteMap_Bean
 } from '@pancodex/domain-lib';
@@ -56,7 +56,7 @@ export async function fetchDocumentData(readDataFunc: ReadDataFromFileFunc, loca
             if (!documentContent) {
                 throw Error('Page content is not found.');
             }
-            const documentProfiles: DocumentProfiles = await readDataFunc<DocumentProfiles>('data/profilesIndex.json');
+            const documentProfiles: DocumentProfile_Index = await readDataFunc<DocumentProfile_Index>('data/profilesIndex.json');
             if (!documentProfiles) {
                 throw Error('Profiles file is not found.');
             }

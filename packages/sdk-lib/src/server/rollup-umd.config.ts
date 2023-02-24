@@ -1,7 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import image from '@rollup/plugin-image';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import styles from 'rollup-plugin-styles';
 import externalGlobals from 'rollup-plugin-external-globals';
 import terser from 'rollup-plugin-terser';
@@ -34,9 +34,7 @@ const inputOptions: any = {
         styles({
             mode: ['extract', 'pancodex-theme.css']
         }),
-        typescript({
-            useTsconfigDeclarationDir: true
-        }),
+        typescript(),
         externalGlobals({
             '@headlessui/react': 'headlessuiReact',
             '@pancodex/bridge-lib': 'pancodexBridge',

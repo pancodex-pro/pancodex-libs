@@ -20,7 +20,7 @@
     "noEmit": true,
     "jsx": "react",
     "declaration": true,
-    "declarationDir": "lib/types",
+    "declarationDir": "types",
     "target": "es6"
   },
   "include": [

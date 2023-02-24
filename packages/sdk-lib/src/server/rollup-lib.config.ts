@@ -2,7 +2,7 @@ import json from '@rollup/plugin-json';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import image from '@rollup/plugin-image';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from '@rollup/plugin-typescript';
 import styles from 'rollup-plugin-styles';
 import svgr from '@svgr/rollup';
 
@@ -36,7 +36,6 @@ const config: any = {
         '@pancodex/platform-lib'
     ],
     plugins: [
-        json(),
         resolve({preferBuiltins: true}),
         styles({
             mode: ['extract', 'index.css']
@@ -44,9 +43,8 @@ const config: any = {
         svgr(),
         image(),
         commonjs(),
-        typescript({
-            useTsconfigDeclarationDir: true,
-        }),
+        typescript(),
+        json(),
     ],
 };
 
