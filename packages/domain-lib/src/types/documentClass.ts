@@ -1,48 +1,52 @@
 import {AnyFieldType, AnyField} from './fields';
-import {DocumentType, LocaleType} from './document';
+import {DocumentType, LocaleType, DocumentContentDataFieldType} from './document';
 
-export type StringSelectKey = string | undefined | void;
-export type TextConstantKey = string | undefined;
-
-export type DocumentContentBlockComponentFieldClass<S extends StringSelectKey = undefined, T extends TextConstantKey = undefined> = {
+export type DocumentContentBlockComponentFieldClass = {
     label?: string;
     type: AnyFieldType;
     indexNumber: number;
-    stringSelectKey?: S;
-    textConstantKey?: T;
     fieldContent: AnyField;
 };
 
-export type DocumentContentBlockComponentClass<S extends StringSelectKey = undefined, T extends TextConstantKey = undefined> = {
+export type DocumentContentBlockComponentClass = {
     label: string;
     isArray?: boolean;
     indexNumber: number;
-    props: Record<string, DocumentContentBlockComponentFieldClass<S, T>>;
+    props: Record<string, DocumentContentBlockComponentFieldClass>;
 };
 
-export type DocumentContentBlockClass<S extends StringSelectKey = undefined, T extends TextConstantKey = undefined> = {
+export type DocumentContentBlockClass = {
     description: string;
     isDefault?: boolean;
-    components: Record<string, DocumentContentBlockComponentClass<S, T>>;
+    components: Record<string, DocumentContentBlockComponentClass>;
 };
 
-/**
- * @template S - a generic argument that is a literal type of all possible keys of string selection variants
- * @template T - a generic argument that is a literal type of all possible keys of text constants
- */
-export type DocumentClass<S extends StringSelectKey = undefined, T extends TextConstantKey = undefined> = {
-    type: DocumentType;
-    defaultTitle: string;
-    defaultSlug: string;
-    description: string;
-    metaBlocks: Record<string, DocumentContentBlockClass<S, T>>;
-    bodyBlocks: Record<string, DocumentContentBlockClass<S, T>>;
-};
-
-export type TextConstants_Index = Record<string, Record<LocaleType, string>>;
-export type StringSelects_Index = Record<string, Array<{
+export type DocumentContentDataFieldClassVariant = {
     label: string;
     value: string;
     icon?: string;
-}>>;
-export type DocumentClass_Index = Record<string, DocumentClass<string, string>>;
+};
+export type DocumentContentDataFieldClassInputType = 'text' | 'number' | 'select' | 'dataSetField';
+export type DocumentContentDataFieldClass = {
+    label: string;
+    indexNumber: number;
+    dataType: DocumentContentDataFieldType;
+    inputType: DocumentContentDataFieldClassInputType;
+    variants?: Array<DocumentContentDataFieldClassVariant>;
+    defaultValue?: string;
+    dataSetField?: string;
+};
+
+export type DocumentClass = {
+    type: DocumentType;
+    label: string;
+    description: string;
+    defaultTitle: string;
+    defaultSlug: string;
+    dataFields: Record<string, DocumentContentDataFieldClass>;
+    linkBlocks: Record<string, DocumentContentBlockClass>;
+    cardBlocks: Record<string, DocumentContentBlockClass>;
+    bodyBlocks: Record<string, DocumentContentBlockClass>;
+};
+
+export type DocumentClass_Index = Record<string, DocumentClass>;

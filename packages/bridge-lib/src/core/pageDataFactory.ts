@@ -3,7 +3,8 @@ import {PageData, DocumentContext} from './types';
 import {imageResolverInstance} from './imageResolver';
 
 const documentContentAreaNames: Array<DocumentContentAreaName> = [
-    'metaBlocks',
+    'linkBlocks',
+    'cardBlocks',
     'bodyBlocks'
 ];
 
@@ -35,8 +36,11 @@ export async function createPageData(documentContext: DocumentContext): Promise<
     if (documentContext) {
         const {siteMap, documentId, documentClass, documentContent, documentProfile, locale} = documentContext;
         for (const documentContentAreaName of documentContentAreaNames) {
-            for(const documentContentBlock of documentContent[documentContentAreaName]) {
-                await setupSources(documentContentBlock);
+            const contentBlocks: Array<DocumentContentBlock> | undefined = documentContent[documentContentAreaName];
+            if (contentBlocks && contentBlocks.length > 0) {
+                for (const documentContentBlock of contentBlocks) {
+                    await setupSources(documentContentBlock);
+                }
             }
         }
         newPageData.content = documentContent;

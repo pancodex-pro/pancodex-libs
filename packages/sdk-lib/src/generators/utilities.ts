@@ -18,3 +18,11 @@ export async function generateJsonFile(object: any, outputFilePath: string): Pro
         throw Error(`Error in generating '${outputFilePath}' file. ${e.message}`);
     }
 }
+
+export async function deleteDir(dirPath: string): Promise<void> {
+    try{
+        await fs.remove(dirPath);
+    } catch (e: any) {
+        throw Error(`Error removing the ${dirPath} directory. ${e.message}`);
+    }
+}

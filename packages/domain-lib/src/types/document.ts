@@ -34,6 +34,14 @@ export type DocumentContentBlock = {
     components: Array<DocumentContentBlockComponent>;
 };
 
+export type DocumentContentDataFieldType = 'string' | 'number';
+export type DocumentContentDataField = {
+    name: string;
+    type: DocumentContentDataFieldType;
+    value: string;
+    dataSetField?: string;
+};
+
 export type DocumentContent_Base = {
     // required fields for system
     title: string;
@@ -45,12 +53,14 @@ export type DocumentContent_Base = {
 };
 
 export type DocumentContent_Bean = DocumentContent_Base & {
-    metaBlocks: Array<DocumentContentBlock>;
+    dataFields: Array<DocumentContentDataField>;
+    linkBlocks: Array<DocumentContentBlock>;
+    cardBlocks: Array<DocumentContentBlock>;
     bodyBlocks: Array<DocumentContentBlock>;
     statusMap: DocumentContentStatusMap;
 };
 
-export type DocumentContentAreaName = 'metaBlocks' | 'bodyBlocks'
+export type DocumentContentAreaName = 'linkBlocks' | 'cardBlocks' | 'bodyBlocks';
 
 export type Document_Base = {
     id: string; // file name

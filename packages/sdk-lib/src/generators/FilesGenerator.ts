@@ -1,6 +1,6 @@
 import path from 'path';
-import {DocumentClass, StringSelects_Index, TextConstants_Index, DocumentClass_Index} from '@pancodex/domain-lib';
-import {generateJsonFile, readObjectFromFile} from './utilities';
+import {DocumentClass, DocumentClass_Index} from '@pancodex/domain-lib';
+import {generateJsonFile, readObjectFromFile, deleteDir} from './utilities';
 import {DocumentTemplateGenerator} from './DocumentTemplateGenerator';
 import {DataContentAdapterGenerator} from './DataContentAdapterGenerator';
 import {AdaptersCommonsGenerator} from './AdaptersCommonsGenerator';
@@ -10,15 +10,11 @@ export class FilesGenerator {
     private _dataDirPath: string;
     private _themeAdaptersDirPath: string;
     private _documentClasses: DocumentClass_Index;
-    private _stringSelects: StringSelects_Index;
-    private _textConstants: TextConstants_Index;
 
     constructor() {
         this._dataDirPath = path.join(process.cwd(), 'data');
         this._themeAdaptersDirPath = path.join(process.cwd(), 'src', 'adapters');
         this._documentClasses = {};
-        this._stringSelects = {};
-        this._textConstants = {};
     }
 
     private async _generateKeyValuesIndex(keyValuesIndex: any, outputFilePath: string): Promise<void> {
@@ -50,25 +46,18 @@ export class FilesGenerator {
         return this;
     }
 
-    withStringSelects(index: StringSelects_Index): FilesGenerator {
-        this._stringSelects = {...this._stringSelects, ...index};
-        return this;
-    }
-
-    withTextConstants(index: TextConstants_Index): FilesGenerator {
-        this._textConstants = {...this._textConstants, ...index};
-        return this;
-    }
-
     async generate(): Promise<void> {
-        const documentClassTuples: Array<[string, DocumentClass<string, string>]> = Object.entries(this._documentClasses);
+        await deleteDir(this._dataDirPath);
+        const documentClassTuples: Array<[string, DocumentClass]> = Object.entries(this._documentClasses);
         let classNames: Array<string> = [];
         for (const documentClassTuple of documentClassTuples) {
-            await new DocumentTemplateGenerator(
-                documentClassTuple[0],
-                documentClassTuple[1],
-                path.join(this._dataDirPath, 'default-templates', `${documentClassTuple[0]}.json`)
-            ).generate();
+            if (documentClassTuple[1].type !== 'main_page') {
+                await new DocumentTemplateGenerator(
+                    documentClassTuple[0],
+                    documentClassTuple[1],
+                    path.join(this._dataDirPath, 'default-templates', `${documentClassTuple[0]}.json`)
+                ).generate();
+            }
             await new DataContentAdapterGenerator(
                 documentClassTuple[0],
                 documentClassTuple[1],
@@ -77,8 +66,6 @@ export class FilesGenerator {
             classNames.push(documentClassTuple[0]);
         }
         await new AdaptersCommonsGenerator(classNames, this._themeAdaptersDirPath).generate();
-        await this._generateKeyValuesIndex(this._stringSelects, path.join(this._dataDirPath, 'stringSelectsIndex.json'));
-        await this._generateKeyValuesIndex(this._textConstants, path.join(this._dataDirPath, 'textConstantsIndex.json'));
         await generateJsonFile(this._documentClasses, path.join(this._dataDirPath, 'documentClassIndex.json'));
     };
 

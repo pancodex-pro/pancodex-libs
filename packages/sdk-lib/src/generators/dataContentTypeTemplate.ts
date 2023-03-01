@@ -1,5 +1,5 @@
 export const dataContentTypeTemplate: string = `
-import {StringValue, ParagraphText, HeaderText, Link, Image} from '<%= libPaths.bridgeLib %>';
+import {StringValue, ParagraphText, HeaderText, Link, Image, DataFieldValue} from '<%= libPaths.bridgeLib %>';
 
 <% function printProps(componentName) {%><% componentProps[componentName].forEach(function(prop) { %>
 <%= prop.name %>: <%= prop.type %>;<% }); %>
@@ -26,11 +26,20 @@ export type <%= upperFirst(className) %>_<%= upperFirst(areaName) %> = Array<{
 <% }); %>
 
 /**
+ * Type of data fields
+ */
+ export type <%= upperFirst(className) %>_DataFields = {
+    <% dataFields.forEach(function(dataFieldName) { %><%= dataFieldName %>?: DataFieldValue;
+    <% }); %>
+ }
+ 
+/**
  * Page content type
  */
 export type <%= upperFirst(className) %>Content = {
     title: string;
     tags: Record<string, number>;
+    dataFields: <%= upperFirst(className) %>_DataFields;
     <% areasNames.forEach(function(areaName) {%>
     <%= areaName %>: <%= upperFirst(className) %>_<%= upperFirst(areaName) %>;
     <% }); %>

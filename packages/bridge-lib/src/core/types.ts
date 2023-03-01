@@ -9,7 +9,8 @@ import type {
     AnyField,
     DocumentContent_Bean,
     DocumentProfile_Item,
-    SiteMap_Bean
+    SiteMap_Bean,
+    DocumentContentDataFieldType
 } from '@pancodex/domain-lib';
 
 export type {
@@ -20,7 +21,12 @@ export type {
     DocumentsListing,
     StringValue,
     AnyFieldType,
-    AnyField
+    AnyField,
+};
+
+export type DataFieldValue = {
+    type: DocumentContentDataFieldType,
+    value: string;
 };
 
 export type PageContent = Omit<DocumentContent_Bean, 'isCustomSlug' | 'profileId' | 'statusMap'>;

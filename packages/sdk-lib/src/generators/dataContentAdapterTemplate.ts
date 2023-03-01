@@ -8,9 +8,13 @@ export class <%= upperFirst(className) %>ContentAdapter  extends ContentAdapter<
         const result: <%= upperFirst(className) %>Content = {
             title: content?.title || 'undefined',
             tags: content?.tags || {},
+            dataFields: {},
             <% areasNames.forEach(function(areaName) {%><%= areaName %>: [],<% }); %>
         };
 
+        if (content?.dataFields && content.dataFields.length > 0) {
+            result.dataFields = this.processDataFields(content.dataFields);
+        }
         <% areasNames.forEach(function(areaName) {%>
             if (content?.<%= areaName %> && content.<%= areaName %>.length > 0) {
                 result.<%= areaName %> = this.processBlocks(content.<%= areaName %>, {

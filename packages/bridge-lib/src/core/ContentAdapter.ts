@@ -3,7 +3,8 @@ import {
     DocumentContentBlockComponent,
     DocumentContentBlock
 } from '@pancodex/domain-lib';
-import {PageData, AnyField} from './types';
+import {PageData, AnyField, DataFieldValue} from './types';
+import {DocumentContentDataField} from '@pancodex/domain-lib/src';
 
 type BlocksSpecification = Record<string, ComponentsSpecification>;
 type ComponentsSpecification = Record<string, PropsSpecification>;
@@ -61,6 +62,17 @@ export abstract class ContentAdapter<T> {
                     [blocksItem.name]: this.processComponents(blocksItem.components, foundComponentsSpec),
                 });
             }
+        }
+        return result;
+    }
+
+    protected processDataFields(dataFields: Array<DocumentContentDataField>): Record<string, DataFieldValue> {
+        const result: Record<string, DataFieldValue> = {};
+        for (const dataField of dataFields) {
+            result[dataField.name] = {
+                value: dataField.value,
+                type: dataField.type
+            };
         }
         return result;
     }

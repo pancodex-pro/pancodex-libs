@@ -91,21 +91,6 @@ export async function uploadSkin(uploadOptions: UploadOptions, libDirPath: strin
         content: documentClassIndexFileDescription.fileData
     });
 
-    const stringSelectsIndexFileDescription: FileDescription = readFile(path.join(dataDirPath, 'stringSelectsIndex.json'));
-    const textConstantsIndexFileDescription: FileDescription = readFile(path.join(dataDirPath, 'textConstantsIndex.json'));
-    newTreeItems.push({
-        path: `data/${stringSelectsIndexFileDescription.fileName}`,
-        mode: '100644',
-        type: 'blob',
-        content: stringSelectsIndexFileDescription.fileData
-    });
-    newTreeItems.push({
-        path: `data/${textConstantsIndexFileDescription.fileName}`,
-        mode: '100644',
-        type: 'blob',
-        content: textConstantsIndexFileDescription.fileData
-    });
-
     const distFiles = readAllFilesInDir(distDirPath);
     if (distFiles && distFiles.length > 0) {
         distFiles.forEach(fileItem => {
