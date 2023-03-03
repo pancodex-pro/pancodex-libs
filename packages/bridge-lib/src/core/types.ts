@@ -3,14 +3,14 @@ import type {
     HeaderText,
     ParagraphText,
     Link,
-    DocumentsListing,
     StringValue,
     AnyFieldType,
     AnyField,
     DocumentContent_Bean,
     DocumentProfile_Item,
     SiteMap_Bean,
-    DocumentContentDataFieldType
+    DocumentContentDataFieldType,
+    ChildrenListing
 } from '@pancodex/domain-lib';
 
 export type {
@@ -18,8 +18,8 @@ export type {
     HeaderText,
     ParagraphText,
     Link,
-    DocumentsListing,
     StringValue,
+    ChildrenListing,
     AnyFieldType,
     AnyField,
 };
@@ -37,6 +37,8 @@ export type PageData = {
     profile?: PageProfile;
     content?: PageContent;
     locale?: string;
+    pageDataListByParentId?: Record<string, Array<PageData> | null>;
+    pageDataById?: Record<string, PageData | null>;
 };
 
 export type PagePathParams = {

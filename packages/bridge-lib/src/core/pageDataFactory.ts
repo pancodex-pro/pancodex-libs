@@ -1,4 +1,4 @@
-import {Image, DocumentContentBlock, DocumentContentAreaName} from '@pancodex/domain-lib';
+import {Image, DocumentContentBlock, DocumentContentAreaName, ChildrenListing} from '@pancodex/domain-lib';
 import {PageData, DocumentContext} from './types';
 import {imageResolverInstance} from './imageResolver';
 
@@ -40,6 +40,26 @@ export async function createPageData(documentContext: DocumentContext): Promise<
             if (contentBlocks && contentBlocks.length > 0) {
                 for (const documentContentBlock of contentBlocks) {
                     await setupSources(documentContentBlock);
+                    if (documentContentBlock.components && documentContentBlock.components.length > 0) {
+                        for (const documentContentBlockComponent of documentContentBlock.components) {
+                            if (documentContentBlockComponent.instances && documentContentBlockComponent.instances.length > 0) {
+                                for (const componentInstance of documentContentBlockComponent.instances) {
+                                    if (componentInstance.props && componentInstance.props.length > 0) {
+                                        for (const instanceProp of componentInstance.props) {
+                                            const {type, fieldContent} = instanceProp;
+                                            if (type === 'ChildrenListing') {
+                                                const childrenListing: ChildrenListing = fieldContent as ChildrenListing;
+                                                if (childrenListing.parentDocumentId) {
+                                                    newPageData.pageDataListByParentId = newPageData.pageDataListByParentId || {};
+                                                    newPageData.pageDataListByParentId[childrenListing.parentDocumentId] = null;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

@@ -27,14 +27,9 @@ function findDocument(root: DocumentRecord_Bean, documentSlug: string, locale: s
     }
 }
 
-export async function fetchDocumentData(readDataFunc: ReadDataFromFileFunc, locale?: string, documentSlug?: string): Promise<DocumentDataFetchingStatus> {
+export async function fetchDocumentData(readDataFunc: ReadDataFromFileFunc, siteMap: SiteMap_Bean, locale?: string, documentSlug?: string): Promise<DocumentDataFetchingStatus> {
     let result: DocumentDataFetchingStatus = {};
-    let siteMap: SiteMap_Bean;
     try {
-        siteMap = await readDataFunc<SiteMap_Bean>('data/siteMap.json');
-        if (!siteMap) {
-            throw Error('Site map is not found.');
-        }
         let foundDocument: DocumentRecord_Bean | undefined;
         if (documentSlug) {
             foundDocument = findDocument(siteMap.root, documentSlug, locale || siteMap.defaultLocale);

@@ -1,12 +1,13 @@
 export const dataContentAdapterTemplate: string = `
 import {ContentAdapter} from '<%= libPaths.bridgeLib %>';
-import {<%= upperFirst(className) %>Content} from './<%= upperFirst(className) %>Content';
+import {<%= upperFirst(className) %>Content} from './types';
 
 export class <%= upperFirst(className) %>ContentAdapter  extends ContentAdapter<<%= upperFirst(className) %>Content> {
     adapt(): <%= upperFirst(className) %>Content {
         const {content} = this._pageData;
         const result: <%= upperFirst(className) %>Content = {
             title: content?.title || 'undefined',
+            slug: content?.slug || 'undefined',
             tags: content?.tags || {},
             dataFields: {},
             <% areasNames.forEach(function(areaName) {%><%= areaName %>: [],<% }); %>

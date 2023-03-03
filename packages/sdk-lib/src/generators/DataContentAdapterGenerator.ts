@@ -8,7 +8,8 @@ import {
     DocumentContentAreaName,
     DocumentContentBlockComponentClass,
     AnyFieldType,
-    DocumentContentBlockComponentFieldClass, DocumentContentDataFieldClass
+    DocumentContentBlockComponentFieldClass,
+    DocumentContentDataFieldClass
 } from '@pancodex/domain-lib';
 import {formatTS} from './prettierWrapper';
 import {dataContentTypeTemplate} from './dataContentTypeTemplate';

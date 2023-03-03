@@ -1,27 +1,78 @@
 import {
     DocumentContentBlockComponentField,
     DocumentContentBlockComponent,
-    DocumentContentBlock
+    DocumentContentBlock,
+    Image,
+    HeaderText,
+    ParagraphText,
+    Link,
+    ChildrenListing
 } from '@pancodex/domain-lib';
-import {PageData, AnyField, DataFieldValue} from './types';
+import {PageData, DataFieldValue} from './types';
 import {DocumentContentDataField} from '@pancodex/domain-lib/src';
 
 type BlocksSpecification = Record<string, ComponentsSpecification>;
 type ComponentsSpecification = Record<string, PropsSpecification>;
 type PropsSpecification = Array<string>;
 
+type AdaptPageDataCallBack = (pageData: PageData) => any;
+
 export abstract class ContentAdapter<T> {
     protected readonly _pageData: PageData;
+    protected readonly _adaptPageDataCb: AdaptPageDataCallBack | undefined;
 
-    public constructor(pageData: PageData) {
+    public constructor(pageData: PageData, adaptPageDataCb?: AdaptPageDataCallBack | undefined) {
         this._pageData = pageData;
+        this._adaptPageDataCb = adaptPageDataCb;
     }
 
-    protected processProps(props: Array<DocumentContentBlockComponentField>, propsSpec: PropsSpecification): Record<string, AnyField> {
-        const result: Record<string, AnyField> = {};
+    protected processProps(props: Array<DocumentContentBlockComponentField>, propsSpec: PropsSpecification): Record<string, any> {
+        const result: Record<string, any> = {};
         for (const propsItem of props) {
             if (propsSpec.includes(propsItem.name)) {
-                result[propsItem.name] = propsItem.fieldContent;
+                const {type, fieldContent, name} = propsItem;
+                switch (type) {
+                    case 'Image':
+                        result[name] = {
+                            src: (fieldContent as Image).src,
+                            alt: (fieldContent as Image).alt,
+                            height: (fieldContent as Image).height,
+                            width: (fieldContent as Image).width,
+                        };
+                        break;
+                    case 'HeaderText':
+                        result[name] = (fieldContent as HeaderText).htmlText;
+                        break;
+                    case 'ParagraphText':
+                        result[name] = (fieldContent as ParagraphText).htmlText;
+                        break;
+                    case 'Link':
+                        result[name] = {
+                            href: (fieldContent as Link).href,
+                            target: (fieldContent as Link).target
+                        };
+                        break;
+                    case 'ChildrenListing':
+                        if (this._adaptPageDataCb) {
+                            const parentDocumentId: string | undefined = (fieldContent as ChildrenListing).parentDocumentId;
+                            if (parentDocumentId && this._pageData.pageDataListByParentId) {
+                                const pageDataList: Array<PageData> | null = this._pageData.pageDataListByParentId[parentDocumentId];
+                                if (pageDataList) {
+                                    const pageContentContextList: Array<any> = [];
+                                    for (const pageData of pageDataList) {
+                                        const adaptedContent: any = this._adaptPageDataCb(pageData);
+                                        if (adaptedContent) {
+                                            pageContentContextList.push(adaptedContent);
+                                        }
+                                    }
+                                    result[name] = pageContentContextList;
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         return result;

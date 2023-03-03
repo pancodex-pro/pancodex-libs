@@ -1,9 +1,7 @@
 export const dataContentTypeTemplate: string = `
-import {StringValue, ParagraphText, HeaderText, Link, Image, DataFieldValue} from '<%= libPaths.bridgeLib %>';
-
-<% function printProps(componentName) {%><% componentProps[componentName].forEach(function(prop) { %>
-<%= prop.name %>: <%= prop.type %>;<% }); %>
-<% } %> 
+<% function printProps(componentName) { componentProps[componentName].forEach(function(prop) { %><% if (prop.type === 'Image') { %><%= prop.name %>: { src: string; alt: string; width: number; height: number; };<% } else if (prop.type === 'HeaderText') { %><%= prop.name %>: string;<% } else if (prop.type === 'ParagraphText') { %><%= prop.name %>: string;<% } else if (prop.type === 'Link') { %><%= prop.name %>: { href: string; target: string; };<% } else if (prop.type === 'ChildrenListing') { %><%= prop.name %>: Array<PageContentContext>;<% } %><% });} %> 
+import {PageContentContext} from './types';
+type DataFieldType = 'string' | 'number';
 
 /**
  * Types of the blocks
@@ -29,7 +27,7 @@ export type <%= upperFirst(className) %>_<%= upperFirst(areaName) %> = Array<{
  * Type of data fields
  */
  export type <%= upperFirst(className) %>_DataFields = {
-    <% dataFields.forEach(function(dataFieldName) { %><%= dataFieldName %>?: DataFieldValue;
+    <% dataFields.forEach(function(dataFieldName) { %><%= dataFieldName %>?: {value: string; type: DataFieldType;};
     <% }); %>
  }
  
@@ -38,6 +36,7 @@ export type <%= upperFirst(className) %>_<%= upperFirst(areaName) %> = Array<{
  */
 export type <%= upperFirst(className) %>Content = {
     title: string;
+    slug: string;
     tags: Record<string, number>;
     dataFields: <%= upperFirst(className) %>_DataFields;
     <% areasNames.forEach(function(areaName) {%>
