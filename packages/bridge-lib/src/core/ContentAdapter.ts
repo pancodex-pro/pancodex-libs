@@ -71,6 +71,18 @@ export abstract class ContentAdapter<T> {
                                             }
                                         }
                                     }
+                                } else if (selectionMode === 'selectDocuments') {
+                                    for(const documentId of documentsIds) {
+                                        if (documentId && this._pageData.pageDataById) {
+                                            const pageData: PageData | null = this._pageData.pageDataById[documentId];
+                                            if (pageData) {
+                                                const adaptedContent: any = this._adaptPageDataCb(pageData);
+                                                if (adaptedContent) {
+                                                    pageContentContextList.push(adaptedContent);
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                                 result[name] = pageContentContextList;
                             }

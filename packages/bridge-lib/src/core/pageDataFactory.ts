@@ -55,6 +55,11 @@ export async function createPageData(documentContext: DocumentContext): Promise<
                                                             newPageData.pageDataListByParentId = newPageData.pageDataListByParentId || {};
                                                             newPageData.pageDataListByParentId[parentDocumentId] = null;
                                                         }
+                                                    } else if (selectionMode === 'selectDocuments') {
+                                                        for (const documentId of documentsIds) {
+                                                            newPageData.pageDataById = newPageData.pageDataById || {};
+                                                            newPageData.pageDataById[documentId] = null;
+                                                        }
                                                     }
                                                 }
                                             }

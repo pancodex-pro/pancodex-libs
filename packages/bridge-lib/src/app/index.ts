@@ -1,3 +1,4 @@
+export * from './fetchData';
 export * from './fetchDocumentData';
 export * from './fetchDocumentDataById';
 export * from './fetchDocumentsDataByParentId';

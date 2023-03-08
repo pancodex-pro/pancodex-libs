@@ -6,10 +6,12 @@ import socketIO from 'socket.io';
 import {formatISO} from 'date-fns';
 import * as rollupUmdApi from './rollup-umd-api';
 import * as rollupLibApi from './rollup-lib-api';
-import {readAllFilesInDir} from './fileUtils';
+import {readAllFilesInDir, readFile} from './fileUtils';
 import {getBranch, createTree, createCommit, waitForBranchUpdatedWithCommit, getBranchTree} from './githubUtils';
-import {GitTreeItem} from '../types';
+import {GitTreeItem, FileDescription} from '../types';
 import {uploadSkin} from './uploadSkin';
+import path from 'path';
+import {DocumentClass_Index} from '@pancodex/domain-lib';
 
 const clientSockets: any = {};
 
@@ -100,8 +102,17 @@ export function runServer(options: { distDirPath: string, libDirPath: string; da
                     }
                 });
         });
-
-        socket.emit("hello", "Pancodex theme SDK server is connected.");
+        const documentClassIndexData: FileDescription = readFile(path.join(dataDirPath, 'documentClassIndex.json'));
+        if (documentClassIndexData && documentClassIndexData.fileData) {
+            try {
+                const documentClassIndex: DocumentClass_Index = JSON.parse(documentClassIndexData.fileData) as DocumentClass_Index;
+                socket.emit("hello", documentClassIndex);
+            } catch (e: any) {
+                console.error(`ERROR: fail to parse "documentClassIndex.json" file. Please run "yarn scaffold" or "npm run scaffold" before you start SDK server.`)
+            }
+        } else {
+            console.error(`ERROR: fail to read "documentClassIndex.json" file. Please run "yarn scaffold" or "npm run scaffold" before you start SDK server.`)
+        }
 
     });
 
