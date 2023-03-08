@@ -1,4 +1,4 @@
-import {Image, DocumentContentBlock, DocumentContentAreaName, ChildrenListing} from '@pancodex/domain-lib';
+import {Image, DocumentContentBlock, DocumentContentAreaName, DocumentsList} from '@pancodex/domain-lib';
 import {PageData, DocumentContext} from './types';
 import {imageResolverInstance} from './imageResolver';
 
@@ -47,11 +47,15 @@ export async function createPageData(documentContext: DocumentContext): Promise<
                                     if (componentInstance.props && componentInstance.props.length > 0) {
                                         for (const instanceProp of componentInstance.props) {
                                             const {type, fieldContent} = instanceProp;
-                                            if (type === 'ChildrenListing') {
-                                                const childrenListing: ChildrenListing = fieldContent as ChildrenListing;
-                                                if (childrenListing.parentDocumentId) {
-                                                    newPageData.pageDataListByParentId = newPageData.pageDataListByParentId || {};
-                                                    newPageData.pageDataListByParentId[childrenListing.parentDocumentId] = null;
+                                            if (type === 'DocumentsList') {
+                                                const {documentsIds, selectionMode} = fieldContent as DocumentsList;
+                                                if (documentsIds && documentsIds.length > 0) {
+                                                    if (selectionMode === 'selectChildrenDocuments') {
+                                                        for (const parentDocumentId of documentsIds) {
+                                                            newPageData.pageDataListByParentId = newPageData.pageDataListByParentId || {};
+                                                            newPageData.pageDataListByParentId[parentDocumentId] = null;
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }

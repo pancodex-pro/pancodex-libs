@@ -6,7 +6,7 @@ import {
     HeaderText,
     ParagraphText,
     Link,
-    ChildrenListing
+    DocumentsList
 } from '@pancodex/domain-lib';
 import {PageData, DataFieldValue} from './types';
 import {DocumentContentDataField} from '@pancodex/domain-lib/src';
@@ -52,21 +52,27 @@ export abstract class ContentAdapter<T> {
                             target: (fieldContent as Link).target
                         };
                         break;
-                    case 'ChildrenListing':
+                    case 'DocumentsList':
                         if (this._adaptPageDataCb) {
-                            const parentDocumentId: string | undefined = (fieldContent as ChildrenListing).parentDocumentId;
-                            if (parentDocumentId && this._pageData.pageDataListByParentId) {
-                                const pageDataList: Array<PageData> | null = this._pageData.pageDataListByParentId[parentDocumentId];
-                                if (pageDataList) {
-                                    const pageContentContextList: Array<any> = [];
-                                    for (const pageData of pageDataList) {
-                                        const adaptedContent: any = this._adaptPageDataCb(pageData);
-                                        if (adaptedContent) {
-                                            pageContentContextList.push(adaptedContent);
+                            const {documentsIds, selectionMode} = (fieldContent as DocumentsList);
+                            if (documentsIds && documentsIds.length > 0) {
+                                const pageContentContextList: Array<any> = [];
+                                if (selectionMode === 'selectChildrenDocuments') {
+                                    for(const parentDocumentId of documentsIds) {
+                                        if (parentDocumentId && this._pageData.pageDataListByParentId) {
+                                            const pageDataList: Array<PageData> | null = this._pageData.pageDataListByParentId[parentDocumentId];
+                                            if (pageDataList) {
+                                                for (const pageData of pageDataList) {
+                                                    const adaptedContent: any = this._adaptPageDataCb(pageData);
+                                                    if (adaptedContent) {
+                                                        pageContentContextList.push(adaptedContent);
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
-                                    result[name] = pageContentContextList;
                                 }
+                                result[name] = pageContentContextList;
                             }
                         }
                         break;

@@ -10,7 +10,7 @@ import type {
     DocumentProfile_Item,
     SiteMap_Bean,
     DocumentContentDataFieldType,
-    ChildrenListing
+    DocumentsList
 } from '@pancodex/domain-lib';
 
 export type {
@@ -19,7 +19,7 @@ export type {
     ParagraphText,
     Link,
     StringValue,
-    ChildrenListing,
+    DocumentsList,
     AnyFieldType,
     AnyField,
 };
