@@ -3,26 +3,39 @@ import express from 'express';
 import cors from 'cors';
 import http from 'http';
 import socketIO from 'socket.io';
-import {formatISO} from 'date-fns';
 import * as rollupUmdApi from './rollup-umd-api';
-import * as rollupLibApi from './rollup-lib-api';
-import {readAllFilesInDir, readFile} from './fileUtils';
-import {getBranch, createTree, createCommit, waitForBranchUpdatedWithCommit, getBranchTree} from './githubUtils';
-import {GitTreeItem, FileDescription} from '../types';
+import {readFile} from './fileUtils';
+import {FileDescription} from '../types';
 import {uploadSkin} from './uploadSkin';
 import path from 'path';
 import {DocumentClass_Index} from '@pancodex/domain-lib';
 
 const clientSockets: any = {};
 
-function notifyClients(messageCode: string) {
+function readDocumentClassIndex(dataDirPath: string): DocumentClass_Index {
+    const documentClassIndexData: FileDescription = readFile(path.join(dataDirPath, 'documentClassIndex.json'));
+    let documentClassIndex: DocumentClass_Index = {};
+    if (documentClassIndexData && documentClassIndexData.fileData) {
+        try {
+            documentClassIndex = JSON.parse(documentClassIndexData.fileData) as DocumentClass_Index;
+        } catch (e: any) {
+            console.error(`ERROR: fail to parse "documentClassIndex.json" file. Please run "yarn scaffold" or "npm run scaffold" before you start SDK server.`)
+        }
+    } else {
+        console.error(`ERROR: fail to read "documentClassIndex.json" file. Please run "yarn scaffold" or "npm run scaffold" before you start SDK server.`)
+    }
+    return documentClassIndex;
+}
+
+function notifyClients(messageCode: string, arg?: {documentClassIndex: DocumentClass_Index}) {
     const clientSocketsIds = Object.keys(clientSockets);
+
     if (clientSocketsIds && clientSocketsIds.length > 0) {
         let clientSocket;
         clientSocketsIds.forEach(clientSocketId => {
             clientSocket = clientSockets[clientSocketId];
             if (clientSocket) {
-                clientSocket.emit(messageCode, '');
+                clientSocket.emit(messageCode, arg);
             }
         });
     }
@@ -49,7 +62,8 @@ export function runServer(options: { distDirPath: string, libDirPath: string; da
         } else if (code === 'END') {
             console.log('Bundling finished all');
             console.timeEnd(timeBundlingMessage);
-            notifyClients('bundling_finished');
+            const documentClassIndex: DocumentClass_Index = readDocumentClassIndex(dataDirPath);
+            notifyClients('bundling_finished', {documentClassIndex});
         } else if (code === 'ERROR') {
             console.log('Bundling finished with error: ', error);
         }
@@ -102,18 +116,8 @@ export function runServer(options: { distDirPath: string, libDirPath: string; da
                     }
                 });
         });
-        const documentClassIndexData: FileDescription = readFile(path.join(dataDirPath, 'documentClassIndex.json'));
-        if (documentClassIndexData && documentClassIndexData.fileData) {
-            try {
-                const documentClassIndex: DocumentClass_Index = JSON.parse(documentClassIndexData.fileData) as DocumentClass_Index;
-                socket.emit("hello", documentClassIndex);
-            } catch (e: any) {
-                console.error(`ERROR: fail to parse "documentClassIndex.json" file. Please run "yarn scaffold" or "npm run scaffold" before you start SDK server.`)
-            }
-        } else {
-            console.error(`ERROR: fail to read "documentClassIndex.json" file. Please run "yarn scaffold" or "npm run scaffold" before you start SDK server.`)
-        }
-
+        const documentClassIndex: DocumentClass_Index = readDocumentClassIndex(dataDirPath);
+        socket.emit("hello", {documentClassIndex});
     });
 
     io.on('disconnect', (socket) => {

@@ -24,9 +24,9 @@ export type DocumentContentBlockClass = {
 export type DocumentContentDataFieldClassVariant = {
     label: string;
     value: string;
-    icon?: string;
+    svg?: string;
 };
-export type DocumentContentDataFieldClassInputType = 'text' | 'number' | 'select' | 'dataSetField';
+export type DocumentContentDataFieldClassInputType = 'text' | 'select' | 'image';
 export type DocumentContentDataFieldClass = {
     label: string;
     indexNumber: number;
