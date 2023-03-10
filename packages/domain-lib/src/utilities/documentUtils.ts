@@ -18,24 +18,24 @@ export function getDocumentTitle(document: Document_Bean | DocumentRecord_Bean, 
 
 export function iterateDocumentContents(
     document: Document_Bean,
-    visitor: (content: DocumentContent_Bean) => void
+    visitor: (content: DocumentContent_Bean, contentLocale?: string) => void
 ): void {
     if (document && document.contents) {
         const localeKeys: Array<LocaleType> = Object.keys(document.contents) as Array<LocaleType>;
         localeKeys.forEach(locale => {
-            visitor(document.contents[locale]);
+            visitor(document.contents[locale], locale);
         });
     }
 }
 
 export function iterateDocumentRecordContents(
     documentRecord: DocumentRecord_Bean,
-    visitor: (content?: DocumentContent_Base) => void
+    visitor: (content?: DocumentContent_Base, contentLocale?: string) => void
 ): void {
     if (documentRecord && documentRecord.contents) {
         const localeKeys: Array<LocaleType> = Object.keys(documentRecord.contents) as Array<LocaleType>;
         localeKeys.forEach(locale => {
-            visitor(documentRecord.contents[locale]);
+            visitor(documentRecord.contents[locale], locale);
         });
     }
 }

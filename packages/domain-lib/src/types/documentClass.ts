@@ -1,11 +1,17 @@
 import {AnyFieldType, AnyField} from './fields';
-import {DocumentType, LocaleType, DocumentContentDataFieldType} from './document';
+import {DocumentType, DocumentContentDataFieldType} from './document';
+
+export type DocumentContentBlockComponentFieldVariant = {
+    label: string;
+    fieldContent: AnyField;
+};
 
 export type DocumentContentBlockComponentFieldClass = {
     label?: string;
     type: AnyFieldType;
     indexNumber: number;
     fieldContent: AnyField;
+    fieldContentVariants?: Array<DocumentContentBlockComponentFieldVariant>;
 };
 
 export type DocumentContentBlockComponentClass = {

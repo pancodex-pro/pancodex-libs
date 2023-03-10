@@ -4,20 +4,23 @@ import type {ParagraphText} from './ParagraphText';
 import type {Link} from './Link';
 import type {StringValue} from './StringValue';
 import type {DocumentsList} from './DocumentsList';
+import type {Icon} from './Icon';
 
 export type AnyFieldType = 'Image'
     | 'HeaderText'
     | 'ParagraphText'
     | 'Link'
     | 'StringValue'
-    | 'DocumentsList';
+    | 'DocumentsList'
+    | 'Icon';
 
 export type AnyField = Image
     | HeaderText
     | ParagraphText
     | Link
     | StringValue
-    | DocumentsList;
+    | DocumentsList
+    | Icon;
 
 export {
     Image,
@@ -25,5 +28,6 @@ export {
     ParagraphText,
     Link,
     StringValue,
-    DocumentsList
+    DocumentsList,
+    Icon
 }
