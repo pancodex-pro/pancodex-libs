@@ -7,12 +7,11 @@ import {
     DocumentContentBlockComponentInstance,
     DocumentContentBlockComponentFieldClass,
     DocumentContentBlockComponentField,
-    DocumentContentAreaName,
-    DocumentContentDataFieldClass
+    DocumentContentDataFieldClass,
+    DocumentContentAreaClass,
+    DocumentContentBlock
 } from '@pancodex/domain-lib';
 import {generateJsonFile} from './utilities';
-
-const areasNames: Array<DocumentContentAreaName> = ['linkBlocks', 'cardBlocks', 'bodyBlocks'];
 
 export class DocumentTemplateGenerator {
     private _documentClass: DocumentClass;
@@ -89,15 +88,22 @@ export class DocumentTemplateGenerator {
         return blockComponents;
     }
 
-    private _addBlock(documentContentArea: DocumentContentAreaName, blockName: string) {
+    private _addDocumentArea(documentAreaName: string, documentArea: DocumentContentAreaClass) {
         this._checkContentBase();
-        const foundBlock: DocumentContentBlockClass | undefined = this._documentClass[documentContentArea][blockName];
-        if (foundBlock) {
-            this._documentTemplate.documentSample.contents['defaultLocale'][documentContentArea].push({
-                name: blockName,
-                components: this._createComponents(foundBlock)
-            });
+        const blockClassTuples: Array<[string, DocumentContentBlockClass]> = Object.entries(documentArea.blocks);
+        const blocks: Array<DocumentContentBlock> = [];
+        for (const blockClassTuple of blockClassTuples) {
+            if (blockClassTuple[1].isDefault) {
+                blocks.push({
+                    name: blockClassTuple[0],
+                    components: this._createComponents(blockClassTuple[1])
+                });
+            }
         }
+        this._documentTemplate.documentSample.contents['defaultLocale'].documentAreas.push({
+            name: documentAreaName,
+            blocks
+        });
     }
 
     private _initContentBase(): DocumentTemplateGenerator {
@@ -109,9 +115,7 @@ export class DocumentTemplateGenerator {
             isCustomSlug: true,
             tags: {},
             dataFields: [],
-            linkBlocks: [],
-            cardBlocks: [],
-            bodyBlocks: []
+            documentAreas: [],
         };
         return this;
     }
@@ -119,13 +123,12 @@ export class DocumentTemplateGenerator {
     async generate(): Promise<void> {
         this._initContentBase();
         this._addDataFields();
-        for (const areaName of areasNames) {
-            const blockClassTuples: Array<[string, DocumentContentBlockClass]> = Object.entries(this._documentClass[areaName]);
-            for (const blockClassTuple of blockClassTuples) {
-                if (blockClassTuple[1].isDefault) {
-                    this._addBlock(areaName, blockClassTuple[0]);
-                }
-            }
+        let documentAreaClassTuples: Array<[string, DocumentContentAreaClass]> = Object.entries(this._documentClass.documentAreas);
+        documentAreaClassTuples = documentAreaClassTuples.sort((a, b) => {
+            return a[1].indexNumber - b[1].indexNumber;
+        });
+        for (const documentAreaClassTuple of documentAreaClassTuples) {
+            this._addDocumentArea(documentAreaClassTuple[0], documentAreaClassTuple[1]);
         }
         await generateJsonFile(this._documentTemplate, this._outputFileName);
     }

@@ -42,6 +42,11 @@ export type DocumentContentDataField = {
     dataSetField?: string;
 };
 
+export type DocumentContentArea = {
+    name: string;
+    blocks: Array<DocumentContentBlock>;
+};
+
 export type DocumentContent_Base = {
     // required fields for system
     title: string;
@@ -54,13 +59,9 @@ export type DocumentContent_Base = {
 
 export type DocumentContent_Bean = DocumentContent_Base & {
     dataFields: Array<DocumentContentDataField>;
-    linkBlocks: Array<DocumentContentBlock>;
-    cardBlocks: Array<DocumentContentBlock>;
-    bodyBlocks: Array<DocumentContentBlock>;
+    documentAreas: Array<DocumentContentArea>;
     statusMap: DocumentContentStatusMap;
 };
-
-export type DocumentContentAreaName = 'linkBlocks' | 'cardBlocks' | 'bodyBlocks';
 
 export type Document_Base = {
     id: string; // file name

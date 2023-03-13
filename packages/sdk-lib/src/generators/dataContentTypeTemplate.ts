@@ -15,13 +15,18 @@ type DataFieldType = 'string' | 'number';
 <% }); %>
 
 /**
- * Types of the page areas
+ * Types of the document areas
  */
 <% areasNames.forEach(function(areaName) {%>
 export type <%= upperFirst(className) %>_<%= upperFirst(areaName) %> = Array<{
     <% areaBlocksNames[areaName].forEach(function(blockName) { %><%= blockName %>?: <%= upperFirst(className) %>_<%= upperFirst(blockName) %>;<% }); %>
 }>;
 <% }); %>
+
+export type <%= upperFirst(className) %>_DocumentAreas = {
+    <% areasNames.forEach(function(areaName) {%><%= areaName %>: <%= upperFirst(className) %>_<%= upperFirst(areaName) %>;
+    <% }); %>
+}
 
 /**
  * Type of data fields
@@ -39,8 +44,6 @@ export type <%= upperFirst(className) %>Content = {
     slug: string;
     tags: Record<string, number>;
     dataFields: <%= upperFirst(className) %>_DataFields;
-    <% areasNames.forEach(function(areaName) {%>
-    <%= areaName %>: <%= upperFirst(className) %>_<%= upperFirst(areaName) %>;
-    <% }); %>
+    documentAreas: <%= upperFirst(className) %>_DocumentAreas;
 };
 `;

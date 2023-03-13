@@ -6,11 +6,14 @@ import {
     HeaderText,
     ParagraphText,
     Link,
-    DocumentsList
+    DocumentsList,
+    DocumentContentDataField,
+    DocumentContentArea,
+    Icon, StringValue
 } from '@pancodex/domain-lib';
 import {PageData, DataFieldValue} from './types';
-import {DocumentContentDataField} from '@pancodex/domain-lib/src';
 
+type DocumentAreasSpecification = Record<string, BlocksSpecification>;
 type BlocksSpecification = Record<string, ComponentsSpecification>;
 type ComponentsSpecification = Record<string, PropsSpecification>;
 type PropsSpecification = Array<string>;
@@ -32,6 +35,16 @@ export abstract class ContentAdapter<T> {
             if (propsSpec.includes(propsItem.name)) {
                 const {type, fieldContent, name} = propsItem;
                 switch (type) {
+                    case 'Icon':
+                        result[name] = {
+                            iconName: (fieldContent as Icon).iconName,
+                        };
+                        break;
+                    case 'StringValue':
+                        result[name] = {
+                            value: (fieldContent as StringValue).value,
+                        };
+                        break;
                     case 'Image':
                         result[name] = {
                             src: (fieldContent as Image).src,
@@ -130,6 +143,17 @@ export abstract class ContentAdapter<T> {
                 result.push({
                     [blocksItem.name]: this.processComponents(blocksItem.components, foundComponentsSpec),
                 });
+            }
+        }
+        return result;
+    }
+
+    protected processDocumentAreas(documentAreas: Array<DocumentContentArea>, documentAreasSpec: DocumentAreasSpecification): Record<string, any> {
+        const result: Record<string, any> = {};
+        for (const documentArea of documentAreas) {
+            const foundBlocksSpec = documentAreasSpec[documentArea.name];
+            if (foundBlocksSpec && documentArea.blocks && documentArea.blocks.length > 0) {
+                result[documentArea.name] = this.processBlocks(documentArea.blocks, foundBlocksSpec);
             }
         }
         return result;

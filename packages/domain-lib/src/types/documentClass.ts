@@ -16,6 +16,7 @@ export type DocumentContentBlockComponentFieldClass = {
 
 export type DocumentContentBlockComponentClass = {
     label: string;
+    helpText?: string;
     isArray?: boolean;
     indexNumber: number;
     props: Record<string, DocumentContentBlockComponentFieldClass>;
@@ -43,6 +44,13 @@ export type DocumentContentDataFieldClass = {
     dataSetField?: string;
 };
 
+export type DocumentContentAreaClass = {
+    label: string;
+    helpText?: string;
+    indexNumber: number;
+    blocks: Record<string, DocumentContentBlockClass>;
+};
+
 export type DocumentClass = {
     type: DocumentType;
     label: string;
@@ -50,9 +58,8 @@ export type DocumentClass = {
     defaultTitle: string;
     defaultSlug: string;
     dataFields: Record<string, DocumentContentDataFieldClass>;
-    linkBlocks: Record<string, DocumentContentBlockClass>;
-    cardBlocks: Record<string, DocumentContentBlockClass>;
-    bodyBlocks: Record<string, DocumentContentBlockClass>;
+    documentAreas: Record<string, DocumentContentAreaClass>
+    profileAreas: Record<string, DocumentContentAreaClass>
 };
 
 export type DocumentClass_Index = Record<string, DocumentClass>;

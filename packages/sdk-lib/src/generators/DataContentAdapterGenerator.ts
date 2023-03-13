@@ -5,25 +5,25 @@ import template from 'lodash/template';
 import {
     DocumentClass,
     DocumentContentBlockClass,
-    DocumentContentAreaName,
     DocumentContentBlockComponentClass,
     AnyFieldType,
     DocumentContentBlockComponentFieldClass,
-    DocumentContentDataFieldClass
+    DocumentContentDataFieldClass,
+    DocumentContentAreaClass
 } from '@pancodex/domain-lib';
 import {formatTS} from './prettierWrapper';
 import {dataContentTypeTemplate} from './dataContentTypeTemplate';
 import {dataContentAdapterTemplate} from './dataContentAdapterTemplate';
 
-type TemplateComponentObject = {name: string; isArray?: boolean};
-type TemplatePropObject = {name: string; type: AnyFieldType};
+type TemplateComponentObject = { name: string; isArray?: boolean };
+type TemplatePropObject = { name: string; type: AnyFieldType };
 
 type TemplateObject = {
     libPaths: Record<LibName, string>;
     upperFirst: any;
     className: string;
     dataFields: Array<string>;
-    areasNames: Array<DocumentContentAreaName>;
+    areasNames: Array<string>;
     areaBlocksNames: Record<string, Array<string>>;
     blockComponents: Record<string, Array<TemplateComponentObject>>;
     componentProps: Record<string, Array<TemplatePropObject>>;
@@ -35,7 +35,6 @@ const defaultLibsPaths: Record<LibName, string> = {
     bridgeLib: '@pancodex/bridge-lib',
     domainLib: '@pancodex/domain-lib'
 };
-const areasNames: Array<DocumentContentAreaName> = ['linkBlocks', 'cardBlocks', 'bodyBlocks'];
 
 export class DataContentAdapterGenerator {
     private _className: string;
@@ -56,7 +55,7 @@ export class DataContentAdapterGenerator {
             upperFirst,
             className: this._className,
             dataFields: [],
-            areasNames,
+            areasNames: [],
             areaBlocksNames: {},
             blockComponents: {},
             componentProps: {}
@@ -68,34 +67,33 @@ export class DataContentAdapterGenerator {
         for (const dataFieldClassTuple of dataFieldClassTuples) {
             result.dataFields.push(dataFieldClassTuple[0]);
         }
-        for(const areaName of areasNames) {
-            const blockClassTuples: Array<[string, DocumentContentBlockClass]> = Object.entries(this._documentClass[areaName]);
+        let documentAreaClassTuples: Array<[string, DocumentContentAreaClass]> = Object.entries(this._documentClass.documentAreas);
+        for (const documentAreaClassTuple of documentAreaClassTuples) {
+            const blockClassTuples: Array<[string, DocumentContentBlockClass]> = Object.entries(documentAreaClassTuple[1].blocks);
             const areaBlocksNames: Array<string> = [];
-            for(const blockClassTuple of blockClassTuples) {
+            for (const blockClassTuple of blockClassTuples) {
                 areaBlocksNames.push(blockClassTuple[0]);
-                const foundBlock: DocumentContentBlockClass | undefined = this._documentClass[areaName][blockClassTuple[0]];
-                if (foundBlock) {
-                    const componentClassTuples: Array<[string, DocumentContentBlockComponentClass]> = Object.entries(foundBlock.components);
-                    const blockComponents: Array<TemplateComponentObject> = [];
-                    for(const componentClassTuple of componentClassTuples) {
-                        blockComponents.push({
-                            name: componentClassTuple[0],
-                            isArray: componentClassTuple[1].isArray
+                const componentClassTuples: Array<[string, DocumentContentBlockComponentClass]> = Object.entries(blockClassTuple[1].components);
+                const blockComponents: Array<TemplateComponentObject> = [];
+                for (const componentClassTuple of componentClassTuples) {
+                    blockComponents.push({
+                        name: componentClassTuple[0],
+                        isArray: componentClassTuple[1].isArray
+                    });
+                    const fieldClassTuples: Array<[string, DocumentContentBlockComponentFieldClass]> = Object.entries(componentClassTuple[1].props);
+                    const componentProps: Array<TemplatePropObject> = [];
+                    for (const fieldClassTuple of fieldClassTuples) {
+                        componentProps.push({
+                            name: fieldClassTuple[0],
+                            type: fieldClassTuple[1].type
                         });
-                        const fieldClassTuples: Array<[string, DocumentContentBlockComponentFieldClass]> = Object.entries(componentClassTuple[1].props);
-                        const componentProps: Array<TemplatePropObject> = [];
-                        for (const fieldClassTuple of fieldClassTuples) {
-                            componentProps.push({
-                                name: fieldClassTuple[0],
-                                type: fieldClassTuple[1].type
-                            });
-                        }
-                        result.componentProps[componentClassTuple[0]] = componentProps;
                     }
-                    result.blockComponents[blockClassTuple[0]] = blockComponents;
+                    result.componentProps[componentClassTuple[0]] = componentProps;
                 }
+                result.blockComponents[blockClassTuple[0]] = blockComponents;
             }
-            result.areaBlocksNames[areaName] = areaBlocksNames;
+            result.areaBlocksNames[documentAreaClassTuple[0]] = areaBlocksNames;
+            result.areasNames.push(documentAreaClassTuple[0]);
         }
         return result;
     }
