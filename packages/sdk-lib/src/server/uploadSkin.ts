@@ -21,43 +21,44 @@ export async function uploadSkin(uploadOptions: UploadOptions, libDirPath: strin
     const branchTreeData = await getBranchTree(ownerLogin, installationToken, repoName, branchData.commit.sha, true);
 
     const libFilesIndex: Record<string, boolean> = {};
-    const dataDefaultTemplatesFilesIndex: Record<string, boolean> = {};
+    // const dataDefaultTemplatesFilesIndex: Record<string, boolean> = {};
     branchTreeData.tree.forEach((branchTreeItem: GitTreeItem) => {
         if (branchTreeItem.type === 'blob') {
             if (branchTreeItem.path.startsWith('src/theme')) {
                 libFilesIndex[branchTreeItem.path] = true;
-            } else if (branchTreeItem.path.startsWith('data/default-templates')) {
-                dataDefaultTemplatesFilesIndex[branchTreeItem.path] = true;
             }
+            // else if (branchTreeItem.path.startsWith('data/default-templates')) {
+            //     dataDefaultTemplatesFilesIndex[branchTreeItem.path] = true;
+            // }
         }
     });
 
     const newTreeItems: Array<GitTreeItem> = [];
 
-    const defaultTemplatesDirPath: string = path.join(dataDirPath, 'default-templates');
-    const defaultTemplateFiles = readAllFilesInDir(defaultTemplatesDirPath);
-    if (defaultTemplateFiles && defaultTemplateFiles.length > 0) {
-        let newDefaultTemplateFilePath;
-        const defaultTemplatesDirPathPrefix = `${defaultTemplatesDirPath}/`;
-        defaultTemplateFiles.forEach(fileItem => {
-            newDefaultTemplateFilePath = `data/default-templates/${fileItem.filePath.replace(defaultTemplatesDirPathPrefix, '')}`;
-            delete dataDefaultTemplatesFilesIndex[newDefaultTemplateFilePath];
-            newTreeItems.push({
-                path: newDefaultTemplateFilePath,
-                mode: '100644',
-                type: 'blob',
-                content: fileItem.fileData
-            });
-        });
-    }
-    Object.keys(dataDefaultTemplatesFilesIndex).forEach(defaultTemplateFileKey => {
-        newTreeItems.push({
-            path: defaultTemplateFileKey,
-            mode: '100644',
-            type: 'blob',
-            sha: null
-        });
-    });
+    // const defaultTemplatesDirPath: string = path.join(dataDirPath, 'default-templates');
+    // const defaultTemplateFiles = readAllFilesInDir(defaultTemplatesDirPath);
+    // if (defaultTemplateFiles && defaultTemplateFiles.length > 0) {
+    //     let newDefaultTemplateFilePath;
+    //     const defaultTemplatesDirPathPrefix = `${defaultTemplatesDirPath}/`;
+    //     defaultTemplateFiles.forEach(fileItem => {
+    //         newDefaultTemplateFilePath = `data/default-templates/${fileItem.filePath.replace(defaultTemplatesDirPathPrefix, '')}`;
+    //         delete dataDefaultTemplatesFilesIndex[newDefaultTemplateFilePath];
+    //         newTreeItems.push({
+    //             path: newDefaultTemplateFilePath,
+    //             mode: '100644',
+    //             type: 'blob',
+    //             content: fileItem.fileData
+    //         });
+    //     });
+    // }
+    // Object.keys(dataDefaultTemplatesFilesIndex).forEach(defaultTemplateFileKey => {
+    //     newTreeItems.push({
+    //         path: defaultTemplateFileKey,
+    //         mode: '100644',
+    //         type: 'blob',
+    //         sha: null
+    //     });
+    // });
 
     const libFiles = readAllFilesInDir(libDirPath);
     if (libFiles && libFiles.length > 0) {

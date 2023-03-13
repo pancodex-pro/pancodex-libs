@@ -1,7 +1,6 @@
 import path from 'path';
 import {DocumentClass, DocumentClass_Index} from '@pancodex/domain-lib';
 import {generateJsonFile, readObjectFromFile, deleteDir} from './utilities';
-import {DocumentTemplateGenerator} from './DocumentTemplateGenerator';
 import {DataContentAdapterGenerator} from './DataContentAdapterGenerator';
 import {AdaptersCommonsGenerator} from './AdaptersCommonsGenerator';
 
@@ -51,13 +50,6 @@ export class FilesGenerator {
         const documentClassTuples: Array<[string, DocumentClass]> = Object.entries(this._documentClasses);
         let classNames: Array<string> = [];
         for (const documentClassTuple of documentClassTuples) {
-            if (documentClassTuple[1].type !== 'main_page') {
-                await new DocumentTemplateGenerator(
-                    documentClassTuple[0],
-                    documentClassTuple[1],
-                    path.join(this._dataDirPath, 'default-templates', `${documentClassTuple[0]}.json`)
-                ).generate();
-            }
             await new DataContentAdapterGenerator(
                 documentClassTuple[0],
                 documentClassTuple[1],

@@ -47,6 +47,11 @@ export type DocumentContentArea = {
     blocks: Array<DocumentContentBlock>;
 };
 
+export type DocumentContentProfile = {
+    documentClass: string;
+    profileAreas: Array<DocumentContentArea>;
+};
+
 export type DocumentContent_Base = {
     // required fields for system
     title: string;
@@ -82,10 +87,3 @@ export type DocumentRecord_Bean = Document_Base & {
 export type DocumentRecord_TreeItem = DocumentRecord_Bean & {
     level: number;
 };
-
-export type DocumentTemplate = {
-    description: string;
-    documentSample: Omit<Document_Bean, 'id'>;
-};
-
-export type DocumentTemplate_Index = Record<string, DocumentTemplate>;
