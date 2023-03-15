@@ -27,7 +27,7 @@ async function setupSources(documentContentBlock: DocumentContentBlock): Promise
 export async function createPageData(documentContext: DocumentContext): Promise<PageData> {
     const newPageData: PageData = {};
     if (documentContext) {
-        const {documentClass, documentContent, documentProfile, locale} = documentContext;
+        const {documentClass, documentContent, locale} = documentContext;
         if (documentContent.documentAreas && documentContent.documentAreas.length > 0) {
             for (const documentArea of documentContent.documentAreas) {
                 if (documentArea.blocks && documentArea.blocks.length > 0) {
@@ -68,7 +68,6 @@ export async function createPageData(documentContext: DocumentContext): Promise<
         }
         newPageData.content = documentContent;
         newPageData.locale = locale;
-        newPageData.profile = documentProfile;
         newPageData.name = documentClass;
     }
 

@@ -34,7 +34,42 @@ const inputOptions: any = {
         styles({
             mode: ['extract', 'pancodex-theme.css']
         }),
-        typescript(),
+        typescript({
+            tsconfig: false,
+            baseUrl: './src',
+            include: [
+                './src/**/*.ts',
+                './src/**/*.tsx',
+                './src/**/*.d.ts'
+            ],
+            exclude: [
+                '**/__tests__',
+                '**/*.test.ts',
+                '**/*.test.js',
+            ],
+            jsx: 'react',
+            moduleResolution: 'node',
+            module: 'esnext',
+            target: 'es6',
+            compilerOptions: {
+                lib: [
+                    "dom",
+                    "dom.iterable",
+                    "esnext"
+                ],
+                allowJs: true,
+                skipLibCheck: true,
+                esModuleInterop: true,
+                allowSyntheticDefaultImports: true,
+                strict: true,
+                forceConsistentCasingInFileNames: true,
+                noFallthroughCasesInSwitch: true,
+                resolveJsonModule: true,
+                isolatedModules: true,
+                noEmit: true,
+                declaration: false,
+            }
+        }),
         externalGlobals({
             '@headlessui/react': 'headlessuiReact',
             '@pancodex/bridge-lib': 'pancodexBridge',

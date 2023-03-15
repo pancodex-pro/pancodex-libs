@@ -47,16 +47,10 @@ export type DocumentContentArea = {
     blocks: Array<DocumentContentBlock>;
 };
 
-export type DocumentContentProfile = {
-    documentClass: string;
-    profileAreas: Array<DocumentContentArea>;
-};
-
 export type DocumentContent_Base = {
     // required fields for system
     title: string;
-    slug: string; // MUST be unique through all documents in the site map, used as ID for all dynamic or static data
-    profileId: string;
+    slug: string;
     tags: Record<string, number>;
     dateUpdated?: number;
     isCustomSlug?: boolean;
@@ -65,19 +59,29 @@ export type DocumentContent_Base = {
 export type DocumentContent_Bean = DocumentContent_Base & {
     dataFields: Array<DocumentContentDataField>;
     documentAreas: Array<DocumentContentArea>;
+    commonAreas: Array<DocumentContentArea>;
     statusMap: DocumentContentStatusMap;
 };
 
+export type DocumentContent_Common = {
+    commonAreas: Array<DocumentContentArea>;
+};
+
 export type Document_Base = {
-    id: string; // file name
+    id: string;
     type: DocumentType;
-    documentClass: string; // a DocumentClass class name by which the page editor's UI is built
+    documentClass: string;
 };
 
 export type Document_Bean = Document_Base & {
     isDeleted?: boolean;
     contents: Record<LocaleType, DocumentContent_Bean>;
 }
+
+export type Document_Common = {
+    contents: Record<LocaleType, DocumentContent_Common>;
+    documentClass: string;
+};
 
 export type DocumentRecord_Bean = Document_Base & {
     contents: Partial<Record<LocaleType, DocumentContent_Base>>;

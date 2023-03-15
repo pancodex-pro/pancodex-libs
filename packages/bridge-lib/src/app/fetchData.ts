@@ -21,7 +21,9 @@ export async function fetchPageData(readDataFunc: ReadDataFromFileFunc, locale?:
         console.error(`Can not read "siteMap.json" file. ${siteMapDataStatus.error}`);
         throw Error('Not Found');
     }
-    const dataFetchStatus: DocumentDataFetchingStatus = await fetchDocumentData(readDataFunc, siteMapDataStatus.contextProxy.siteMap, locale, slug);
+    const dataFetchStatus: DocumentDataFetchingStatus = await fetchDocumentData(
+        readDataFunc, siteMapDataStatus.contextProxy.siteMap, locale, slug
+    );
     if (dataFetchStatus.isNotFound || !dataFetchStatus.contextProxy) {
         throw Error('Not Found');
     }

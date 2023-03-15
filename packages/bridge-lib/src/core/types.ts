@@ -7,7 +7,6 @@ import type {
     AnyFieldType,
     AnyField,
     DocumentContent_Bean,
-    DocumentProfile_Item,
     SiteMap_Bean,
     DocumentContentDataFieldType,
     DocumentsList
@@ -29,12 +28,10 @@ export type DataFieldValue = {
     value: string;
 };
 
-export type PageContent = Omit<DocumentContent_Bean, 'isCustomSlug' | 'profileId' | 'statusMap'>;
-export type PageProfile = DocumentProfile_Item;
+export type PageContent = Omit<DocumentContent_Bean, 'isCustomSlug' | 'statusMap'>;
 
 export type PageData = {
     name?: string;
-    profile?: PageProfile;
     content?: PageContent;
     locale?: string;
     pageDataListByParentId?: Record<string, Array<PageData> | null>;
@@ -56,7 +53,6 @@ export type DocumentContext = {
     documentClass: string;
     documentId: string;
     documentContent: DocumentContent_Bean;
-    documentProfile: DocumentProfile_Item;
 };
 
 export type SiteMapDataContext_Proxy = {

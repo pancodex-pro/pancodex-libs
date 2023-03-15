@@ -1,12 +1,9 @@
 import {
     DocumentRecord_Bean,
-    Document_Bean,
-    DocumentContent_Bean,
-    DocumentProfile_Index,
-    DocumentProfile_Item,
-    SiteMap_Bean
+    SiteMap_Bean,
 } from '@pancodex/domain-lib';
 import {DocumentDataFetchingStatus, ReadDataFromFileFunc} from './types';
+import {fetchDocumentDataById} from './fetchDocumentDataById';
 
 function findDocument(root: DocumentRecord_Bean, documentSlug: string, locale: string): DocumentRecord_Bean | undefined {
     const foundContent = root.contents[locale];
@@ -39,35 +36,10 @@ export async function fetchDocumentData(readDataFunc: ReadDataFromFileFunc, site
         } else {
             foundDocument = siteMap.root.children.find(i => i.type === 'main_page');
         }
-        console.log('[fetchPageData] foundDocument by locale: ', documentSlug || 'main_page', locale, foundDocument);
         if (!foundDocument) {
             result.isNotFound = true;
         } else {
-            let document: Document_Bean = await readDataFunc<Document_Bean>(`data/documents/${foundDocument.id}.json`);
-            if (!document) {
-                throw Error('Page file is not found.');
-            }
-            const documentContent: DocumentContent_Bean | undefined = document.contents[locale || siteMap.defaultLocale] || document.contents[siteMap.defaultLocale];
-            if (!documentContent) {
-                throw Error('Page content is not found.');
-            }
-            const documentProfiles: DocumentProfile_Index = await readDataFunc<DocumentProfile_Index>('data/profilesIndex.json');
-            if (!documentProfiles) {
-                throw Error('Profiles file is not found.');
-            }
-            let documentProfile: DocumentProfile_Item | undefined = documentProfiles[documentContent.profileId];
-            if (!documentProfile) {
-                throw Error('Page profile is not found.');
-            }
-            result.isSuccess = true;
-            result.contextProxy = {
-                locale: locale || siteMap.defaultLocale,
-                siteMap,
-                documentClass: document.documentClass,
-                documentId: document.id,
-                documentContent,
-                documentProfile
-            };
+            return fetchDocumentDataById(readDataFunc, siteMap, foundDocument.id, locale);
         }
     } catch (e: any) {
         result = {

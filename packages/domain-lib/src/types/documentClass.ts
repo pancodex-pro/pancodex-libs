@@ -59,7 +59,7 @@ export type DocumentClass = {
     defaultSlug: string;
     dataFields: Record<string, DocumentContentDataFieldClass>;
     documentAreas: Record<string, DocumentContentAreaClass>
-    profileAreas: Record<string, DocumentContentAreaClass>
+    commonAreas: Record<string, DocumentContentAreaClass>
 };
 
 export type DocumentClass_Index = Record<string, DocumentClass>;

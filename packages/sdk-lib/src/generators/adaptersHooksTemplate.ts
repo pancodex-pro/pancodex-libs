@@ -8,7 +8,7 @@ import {
 
 function adaptPageData(pageData: PageData): PageContentContext {
     const pageContentContext: PageContentContext = {};
-    if (pageData && pageData.content && pageData.profile && pageData.name) {
+    if (pageData && pageData.content && pageData.name) {
         switch (pageData.name) {
         <% classNames.forEach(function(className) {%>
             case '<%= upperFirst(className) %>':
