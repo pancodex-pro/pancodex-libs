@@ -6,7 +6,7 @@ export function formatTS (
     text,
     options = {
         singleQuote: true,
-        printWidth: 140,
+        printWidth: 60,
         tabWidth: 4
     }
 ) {
